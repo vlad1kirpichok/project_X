@@ -1,5 +1,0 @@
-
-#ifndef PROJECT_X_INTECT_H
-#define PROJECT_X_INTECT_H
-
-#endif //PROJECT_X_INTECT_H
