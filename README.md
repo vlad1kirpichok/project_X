@@ -9,5 +9,4 @@ Supported Platforms:
 
 * Windows (x64)
 * Linux (x64 and RISC-V RV64I)
-* MasOS (x64 and AArch64)
-
+* MacOS (x64 and AArch64)
