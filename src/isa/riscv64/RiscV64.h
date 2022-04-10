@@ -1,5 +1,5 @@
 
-#ifndef PROJECT_X_RISCV64_H
-#define PROJECT_X_RISCV64_H
+#ifndef X_RISCV64_H
+#define X_RISCV64_H
 
-#endif //PROJECT_X_RISCV64_H
+#endif //X_RISCV64_H
