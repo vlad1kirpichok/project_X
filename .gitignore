@@ -1,6 +1,8 @@
 .idea/
 
 # TeX
-.aux
-.log
-.gz
+*.aux
+*.log
+*.gz
+
+.DS_Store
