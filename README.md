@@ -3,7 +3,11 @@
 ProjectX: Library for Injecting Binary Code into Applications
 ---
 
-The library is developed by [Vlad Kirichok](https://github.com/vlad1kirpichok) as their group project at
+The library is developed by
+[Vlad Kirichok](https://github.com/vlad1kirpichok),
+[Ivan Kovalyonok](https://github.com/KIvy17),
+[Artem Smirnov](https://github.com/artemdsmirnov)
+as their group project at
 [Faculty of Computer Science of Higher School of Economics](https://cs.hse.ru/en/).
 The supervisor is [Andrei Tatarnikov](https://github.com/andrewt0301).
 
