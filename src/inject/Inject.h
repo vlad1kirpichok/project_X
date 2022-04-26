@@ -6,7 +6,7 @@
 #include <string>
 
 #ifdef __APPLE__
-  #include "macos/InjectM.h"
+  #include "macos/inject_m.h"
 #elif _WIN32
   #include "windows/InjectW.h"
 #elif __linux__
