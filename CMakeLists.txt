@@ -12,9 +12,6 @@ include_directories(src/isa/x64)
 
 add_executable(
         project_X
-        src/isa/aarch64/AArch64.h
-        src/isa/riscv64/RiscV64.h
-        src/isa/x64/X64.h
-        src/inject/Inject.h
-        src/Main.cpp
+        src/inject/macos/inject_m.cpp
+        src/main.cpp
 )

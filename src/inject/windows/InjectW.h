@@ -5,6 +5,11 @@
 namespace xinject {
 namespace windows {
 
+template<typename T>
+void inject(const std::string &app_path, const T &binary) {
+  std::cout << "Hello from Windows OS!" << std::endl;
+}
+
 } // namespace windows
 } // namespace xinject
 
