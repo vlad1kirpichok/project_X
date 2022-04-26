@@ -5,16 +5,26 @@
 #include <iostream>
 #include <string>
 
+#ifdef __APPLE__
+  #include "macos/InjectM.h"
+#elif _WIN32
+  #include "windows/InjectW.h"
+#elif __linux__
+  #include "linux/InjectL.h"
+#endif
+
 namespace xinject {
 
 template<typename T>
 void inject(const std::string &app_path, const T &binary) {
 #ifdef __APPLE__
-  std::cout << "Hello from MacOS!" << std::endl;
+  macos::inject(app_path, binary);
 #elif _WIN32
-  std::cout << "Hello from Windows OS!" <<     std::endl;
+  windows::inject(app_path, binary);
 #elif __linux__
-  std::cout << "Hello from Linux OS!" <<     std::endl;
+  linux::inject(app_path, binary);
+#else
+  std::cerr << "Unknown OS!" << std::endl;
 #endif
 }
 
