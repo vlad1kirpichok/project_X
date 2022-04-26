@@ -13,5 +13,5 @@ include_directories(src/isa/x64)
 add_executable(
         project_X
         src/inject/macos/inject_m.cpp
-        src/Main.cpp
+        src/main.cpp
 )
