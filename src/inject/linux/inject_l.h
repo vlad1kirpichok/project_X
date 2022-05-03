@@ -2,6 +2,8 @@
 #ifndef X_INJECTL_H
 #define X_INJECTL_H
 
+#include <iostream>
+
 namespace xinject {
 namespace linux {
 
