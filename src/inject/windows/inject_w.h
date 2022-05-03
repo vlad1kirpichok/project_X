@@ -2,6 +2,8 @@
 #ifndef X_INJECTW_H
 #define X_INJECTW_H
 
+#include <iostream>
+
 namespace xinject {
 namespace windows {
 

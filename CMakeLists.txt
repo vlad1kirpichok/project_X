@@ -10,8 +10,26 @@ include_directories(src/isa/aarch64)
 include_directories(src/isa/riscv64)
 include_directories(src/isa/x64)
 
-add_executable(
+if(UNIX AND NOT APPLE)
+    add_executable(
         project_X
-        src/inject/macos/inject_m.cpp
         src/main.cpp
-)
+        src/inject/windows/inject_w.cpp
+    )
+endif()
+
+if(APPLE)
+    add_executable(
+        project_X
+        src/main.cpp
+        src/inject/macos/inject_m.cpp
+    )
+endif()
+
+if(WIN32)
+    add_executable(
+        project_X
+        src/main.cpp
+        src/inject/windows/inject_w.cpp
+    )
+endif()
