@@ -21,8 +21,8 @@ The supervisor is [Andrei Tatarnikov](https://github.com/andrewt0301).
 
 The library patches executable file to inject code that will be executed before the main function.
 
-For example, consider a "Hello World" program like the one below.
-It contains the `func` function defiction and its call inserted in the `main` function. 
+For example, consider the "Hello World" program below.
+It defines the `func` function and has its call inserted in the `main` function. 
 The injection library provides an API to construct functions like `func`
 and to inject them in the specified executable.
 
