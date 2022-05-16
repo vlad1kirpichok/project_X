@@ -14,6 +14,7 @@ if(UNIX AND NOT APPLE)
     add_executable(
         project_X
         src/main.cpp
+        src/inject/inject.cpp
         src/inject/windows/inject_w.cpp
     )
 endif()
@@ -22,6 +23,7 @@ if(APPLE)
     add_executable(
         project_X
         src/main.cpp
+        src/inject/inject.cpp
         src/inject/macos/inject_m.cpp
     )
 endif()
@@ -30,6 +32,7 @@ if(WIN32)
     add_executable(
         project_X
         src/main.cpp
+        src/inject/inject.cpp
         src/inject/windows/inject_w.cpp
     )
 endif()

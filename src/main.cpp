@@ -7,7 +7,7 @@ using namespace xinject;
 
 int main(int argc, char* argv[]) {
   std::cout << "This is a test" << std::endl;
-  if (argc < 0) {
+  if (argc < 2) {
     std::cout << "File to be patched is not specified!" << std::endl;
     return 1;
   }
