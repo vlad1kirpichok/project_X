@@ -2,7 +2,6 @@
 #ifndef X_INJECT_H
 #define X_INJECT_H
 
-#include <iostream>
 #include <string>
 
 #ifdef __APPLE__
@@ -56,7 +55,7 @@ void save(const std::string &path, const char* data, size_t size);
  */
 template<typename T>
 void save(const std::string &path, const T &binary) {
-    save(path, reinterpret_cast<const char*>(&binary), sizeof(binary));
+  save(path, reinterpret_cast<const char*>(&binary), sizeof(binary));
 }
 
 } // namespace xinject
