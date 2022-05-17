@@ -58,6 +58,29 @@ void save(const std::string &path, const T &binary) {
   save(path, reinterpret_cast<const char*>(&binary), sizeof(binary));
 }
 
+/**
+ * Loads binary data from the specified file.
+ *
+ * @param path the file path
+ * @param data the buffer for storing binary data
+ * @param size the binary data size
+ */
+void load(const std::string &path, char* data, size_t size);
+
+/**
+ * Loads data of the specified type from the specified file.
+ *
+ * @tparam T the data type
+ * @param path the file path
+ * @return the loaded data
+ */
+template<typename T>
+T load(const std::string &path) {
+  T data;
+  load(path, reinterpret_cast<char *>(&data), sizeof(data));
+  return data;
+}
+
 } // namespace xinject
 
 #endif // PROJECT_X_INJECT_H
