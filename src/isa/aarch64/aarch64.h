@@ -78,7 +78,7 @@ enum Reg32 {
   w29,
   w30,
   w31
-}
+};
 
 } // namespace aarch64
 
