@@ -154,6 +154,19 @@ struct b {
     : imm26{OFFSET >> 2}, opc{0b000101} {}
 };
 
+template <Cond C, int OFFSET>
+struct b_ {
+  I_TO_INT32
+
+  unsigned int cond  : 4;
+  unsigned int n     : 1;
+  unsigned int imm19 : 19;
+  unsigned int opc   : 8;
+
+  b_()
+    : cond{C}, n{0}, imm19{OFFSET >> 2}, opc{0b01010100} { }
+};
+
 #undef I_TO_INT32
 
 } // namespace aarch64
