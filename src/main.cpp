@@ -13,8 +13,17 @@ namespace aarch64 {
  * Aarch64 program to injected.
  */
 struct Program {
-  // TODO
+  mov<x1, x2> i1;
+  mov<w1, w4> i2;
+  ret<> i3;
 };
+
+void test() {
+    std::cout << std::hex << mov<x1, x2>{} << std::endl;
+    std::cout << std::hex << mov<x1, x2>{} << std::endl;
+    std::cout << std::hex << ret<>{} << std::endl;
+}
+
 }
 
 namespace riscv64 {
@@ -37,6 +46,7 @@ struct Program {
 }
 
 int main(int argc, char* argv[]) {
+  aarch64::test();
   xinject::save("aarch64_test.bin", aarch64::Program{});
   xinject::save("riscv64_test.bin", riscv64::Program{});
   xinject::save("x64_test.bin",     x64::Program{});
