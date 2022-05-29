@@ -15,13 +15,15 @@ namespace aarch64 {
 struct Program {
   mov<x1, x2> i1;
   mov<w1, w4> i2;
-  ret<> i3;
+  b_<eq, 4>   i3;
+  bl<4>        i4;
+  ret<>       i5;
 };
 
 void test() {
     std::cout << std::hex << mov<x1, x2>{} << std::endl;
     std::cout << std::hex << mov<x1, x2>{} << std::endl;
-    std::cout << std::hex << ret<>{} << std::endl;
+    std::cout << std::hex << bl<4>{} << std::endl;
 }
 
 }
