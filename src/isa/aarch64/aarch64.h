@@ -40,7 +40,8 @@ enum Reg {
   w28,
   w29,
   w30,
-  wsp, // if required to use only 32-bit registers, use this instead of "sp".
+  w31,
+  wzr = w31,
   // 64-bit registers: have numbers 0..31 encoded by 5 bits
   // the 6th bit that is 1 is used instruction opcode to state it deals with 64-bit registers.
   x0,
@@ -73,8 +74,37 @@ enum Reg {
   x27,
   x28,
   x29,
+  fp = x29,
   x30,
-  sp
+  lr = x30,
+  x31,
+  xzr = x31,
+  sp = x31
+};
+
+
+/**
+ * Condition code for branch instructions.
+ */
+enum Cond {
+  eq  = 0b0000,
+  neq = 0b0001,
+  hi  = 0b1000,
+  hs  = 0b0010,
+  ls  = 0b1001,
+  lo  = 0b0011,
+  gt  = 0b1100,
+  ge  = 0b1010,
+  le  = 0b1101,
+  lt  = 0b1011,
+  cs  = 0b0010,
+  cc  = 0b0011,
+  vs  = 0b0110,
+  vc  = 0b0111,
+  mi  = 0b0100,
+  pl  = 0b0101,
+  al  = 0b1110,
+  nv  = 0b1111
 };
 
 /*
@@ -111,6 +141,17 @@ struct ret {
 
   ret()
     : rm{0}, rn{RN}, opc{0b1101011001011111000000} { }
+};
+
+template <int OFFSET>
+struct b {
+  I_TO_INT32
+
+  int imm26 : 26;
+  unsigned int opc : 6;
+
+  b()
+    : imm26{OFFSET >> 2}, opc{0b000101} {}
 };
 
 #undef I_TO_INT32
