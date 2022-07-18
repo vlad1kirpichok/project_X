@@ -132,10 +132,13 @@ namespace riscv64 {
         int imm12           : 1;
         Btype(unsigned char opcode, unsigned char funct3, Reg rs1, Reg rs2, short offset)
                 : opcode(opcode), funct3(funct3), rs1(rs1), rs2(rs2),
-                  imm11(offset >> 11), imm4_1(offset >> 1), imm10_5(offset >> 5), imm12(offset >> 12) {
-        }
+                  imm11(offset >> 11), imm4_1(offset >> 1), imm10_5(offset >> 5), imm12(offset >> 12) { }
         int imm() {
             return (imm12 << 12) | (imm11 << 11) | (imm10_5 << 5) | (imm4_1 << 1);
+        }
+        inline short offset(void* target) {
+            void * source = static_cast<void *>(this);
+            return static_cast<short>(static_cast<short *>(target) - static_cast<short *>(source));
         }
     };
 
@@ -152,8 +155,11 @@ namespace riscv64 {
         int imm() {
             return (imm20 << 20) | (imm19_12 << 12) | (imm11 << 11) | (imm10_1 << 1);
         }
+        inline int offset(void* target) {
+            void * source = static_cast<void *>(this);
+            return static_cast<int>(static_cast<short *>(target) - static_cast<short *>(source));
+        }
     };
-
 
     //R-type instructions RV32
     template <Reg RD, Reg RS1, Reg RS2>
@@ -206,7 +212,6 @@ namespace riscv64 {
         and_() : Rtype{0b0110011, RD, 0b111, RS1, RS2, 0b0000000} { }
     };
 
-
     //R-type instructions RV64
     template <Reg RD, Reg RS1, Reg RS2>
     struct addw : Rtype {
@@ -232,7 +237,6 @@ namespace riscv64 {
     struct sraw : Rtype {
         sraw() : Rtype{0b0111011, RD, 0b101, RS1, RS2, 0b0100000} { }
     };
-
 
     //I-type instructions RV32
     template <Reg RD, Reg RS1, short IMM>
@@ -295,15 +299,13 @@ namespace riscv64 {
         jalr() : Itype{0b1100111, RD, 0b000, RS1, IMM} { }
     };
 
-
-
     //I-type instructions RV64
     template <Reg RD, Reg RS1, short IMM>
     struct lwu : Itype {
         lwu() : Itype{0b0000011, RD, 0b110, RS1, IMM} { }
     };
 
-    template <Reg RD, Reg RS1, short IMM>
+    template <Reg RD, short IMM, Reg RS1>
     struct ld : Itype {
         ld() : Itype{0b0000011, RD, 0b011, RS1, IMM} { }
     };
@@ -312,7 +314,6 @@ namespace riscv64 {
     struct addiw : Itype {
         addiw() : Itype{0b0011011, RD, 0b000, RS1, IMM} { }
     };
-
 
     //U-type instructions
     template <Reg RD, unsigned int IMM>
@@ -324,7 +325,6 @@ namespace riscv64 {
     struct auipc : Utype {
         auipc() : Utype{0b0010111, RD, IMM} {}
     };
-
 
     //S-type instructions RV32
     template <Reg RS2, short IMM, Reg RS1>
@@ -342,18 +342,17 @@ namespace riscv64 {
         sh() : Stype{0b0100011, 0b001, RS1, RS2, IMM} {}
     };
 
-
     //S-type instructions RV64
     template <Reg RS2, short IMM, Reg RS1>
     struct sd : Stype {
         sd() : Stype{0b0100011, 0b011, RS1, RS2, IMM} {}
     };
 
-
     //B-type instructions
-    template <Reg RS1, Reg RS2, short OFFSET>
+    template <Reg RS1, Reg RS2>
     struct beq : Btype {
-        beq() : Btype{0b1100011, 0b000, RS1, RS2, OFFSET} {}
+        beq(short offset) : Btype{0b1100011, 0b000, RS1, RS2, offset} {}
+        beq(void* target) : beq{offset(target)} {}
     };
 
     template <Reg RS1, Reg RS2, short OFFSET>
@@ -381,14 +380,55 @@ namespace riscv64 {
         bgeu() : Btype{0b1100011, 0b111, RS1, RS2, OFFSET} {}
     };
 
-
     //J-type instructions
-    template <Reg RD, int OFFSET>
+    template <Reg RD>
     struct jal : Jtype {
-        jal() : Jtype{0b1101111, RD, OFFSET} {}
+        jal(int offset) : Jtype{0b1101111, RD, offset} {}
+        jal(void* target) : jal{offset(target)} {}
     };
 
 #undef I_TO_INT32
+
+    /**
+     * Macro for saving to stack callee-saved registers (ra, s0-s3).
+     */
+    struct save_to_stack {
+        addi<sp, sp, -40> i0;
+        sd<ra, 0,  sp> i1;
+        sd<s0, 8,  sp> i2;
+        sd<s1, 16, sp> i3;
+        sd<s2, 24, sp> i4;
+        sd<s3, 32, sp> i5;
+    };
+
+    /**
+     * Macro for loading from stack callee-saved registers (ra, s0-s3).
+     */
+    struct load_from_stack {
+        ld<ra, 0,  sp> i0;
+        ld<s0, 8,  sp> i1;
+        ld<s1, 16, sp> i2;
+        ld<s2, 24, sp> i3;
+        ld<s3, 32, sp> i4;
+        addi<sp, sp, 40> i5;
+    };
+
+    /**
+    * Function to be injected.
+    */
+    template <unsigned char count>
+    struct Prog {
+        save_to_stack stack_save;
+        add<s0, zero, zero> i1;
+        addi<s1, zero, count> i2;
+// loop start:
+        beq<s0, s1> loop_start{&stack_load};
+        addi<s0, s0, 1> i3;
+        jal<zero> i4{&loop_start};
+// loop end:
+        load_from_stack stack_load;
+        jalr<zero, ra, 0> ret;
+    };
 
 } // namespace riscv64
 
