@@ -388,6 +388,8 @@ namespace riscv64 {
         jal() : Jtype{0b1101111, RD, OFFSET} {}
     };
 
+#undef I_TO_INT32
+
 } // namespace riscv64
 
 #endif //X_RISCV64_H
