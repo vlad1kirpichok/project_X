@@ -414,13 +414,18 @@ namespace riscv64 {
     };
 
     /**
-    * Function to be injected.
-    */
-    template <unsigned char count>
-    struct Prog {
+     * Function to be injected.
+     * <p>
+     * Calls the specified function in a loop and passes the specified data to it.
+     *
+     * @tparam data_size the data size
+     * @tparam loop_count the loop count
+     */
+    template <unsigned int data_size, unsigned char loop_count>
+    struct Function {
         save_to_stack stack_save;
         add<s0, zero, zero> i1;
-        addi<s1, zero, count> i2;
+        addi<s1, zero, loop_count> i2;
 // loop start:
         beq<s0, s1> loop_start{&stack_load};
         addi<s0, s0, 1> i3;
@@ -428,6 +433,32 @@ namespace riscv64 {
 // loop end:
         load_from_stack stack_load;
         jalr<zero, ra, 0> ret;
+// Data for the function to be called. Placed after executable code.
+        char data[data_size] {0};
+
+        /**
+         * Constructor.
+         *
+         * @param data data for the function
+         */
+        explicit Function(const char * data) {
+            const char * src = data;
+            char * dst = this->data;
+            for (unsigned int i = 0; i < data_size; ++i) {
+                *dst++ = *src++;
+            }
+        }
+
+        /**
+         * Calls the function described by this data structure.
+         *
+         * Requirement: works correctly only on a RISC-V computer.
+         */
+        void call() {
+            typedef void (* func_ptr)();
+            auto func = reinterpret_cast<func_ptr>(this);
+            func();
+        }
     };
 
 } // namespace riscv64
