@@ -245,6 +245,11 @@ namespace riscv64 {
     };
 
     template <Reg RD, Reg RS1, short IMM>
+    struct slli : Itype {
+        slli() : Itype{0b0010011, RD, 0b001, RS1, IMM} { }
+    };
+
+    template <Reg RD, Reg RS1, short IMM>
     struct slti : Itype {
         slti() : Itype{0b0010011, RD, 0b010, RS1, IMM} { }
     };
@@ -259,9 +264,10 @@ namespace riscv64 {
         xori() : Itype{0b0010011, RD, 0b100, RS1, IMM} { }
     };
 
-    template <Reg RD, Reg RS1, short IMM>
+    template <Reg RD, Reg RS1, short IMM = 0>
     struct ori : Itype {
-        ori() : Itype{0b0010011, RD, 0b110, RS1, IMM} { }
+        ori(short imm) : Itype{0b0010011, RD, 0b110, RS1, imm} { }
+        ori() : ori{IMM} {}
     };
 
     template <Reg RD, Reg RS1, short IMM>
@@ -321,9 +327,10 @@ namespace riscv64 {
         lui() : Utype{0b0110111, RD, IMM} {}
     };
 
-    template <Reg RD, unsigned int IMM>
+    template <Reg RD, unsigned int IMM = 0>
     struct auipc : Utype {
-        auipc() : Utype{0b0010111, RD, IMM} {}
+        auipc(unsigned int imm) : Utype{0b0010111, RD, imm} {}
+        auipc() : auipc{IMM} {}
     };
 
     //S-type instructions RV32
@@ -387,6 +394,44 @@ namespace riscv64 {
         jal(void* target) : jal{offset(target)} {}
     };
 
+    template <Reg RD, int imm>
+    struct li32 {
+        lui<RD, (imm >> 12)> i1; // imm<31..12>
+        ori<RD, RD, static_cast<short>(imm) & 0x0FFF> i2; // imm<11..0>
+    };
+
+    template <Reg RD, long long imm>
+    struct li64 {
+        li32<RD, static_cast<int>(imm >> 32)> i1; // imm<63..32>
+        slli<RD, RD, 11> i2;
+        ori<RD, RD, static_cast<short>(imm >> 21) & 0x07FF> i3; // imm<31..21>
+        slli<RD, RD, 11> i4;
+        ori<RD, RD, static_cast<short>(imm >> 10) & 0x07FF> i5; // imm<20..10>
+        slli<RD, RD, 10> i6;
+        ori<RD, RD, static_cast<short>(imm) & 0x03FF> i7; // imm<9..0>
+    };
+
+    template <Reg RD>
+    struct la {
+        Utype i0;
+        Itype i1;
+
+        la(void * target) {
+            long long delta = offset(target);
+            long long hi = delta >> 32;
+            if (hi != 0 && hi != -1L) {
+                throw std::runtime_error("Out of range!");
+            }
+            i0 = auipc<RD>{delta >> 12};
+            i1 = ori<RD, RD>{delta};
+        }
+
+        inline long long offset(void * target) {
+            void * source = static_cast<void *>(this);
+            return static_cast<long long>(static_cast<char *>(target) - static_cast<char *>(source));
+        }
+    };
+
 #undef I_TO_INT32
 
     /**
@@ -423,25 +468,35 @@ namespace riscv64 {
      */
     template <unsigned int data_size, unsigned char loop_count>
     struct Function {
+        typedef int (* func_t)(const char *);
+
         save_to_stack stack_save;
-        add<s0, zero, zero> i1;
-        addi<s1, zero, loop_count> i2;
+        add<s0, zero, zero> s0_count_zero;
+        addi<s1, zero, loop_count> s1_max_count;
+        la<s2> s2_data{data};
+        la<s3> s3_func_addr{reinterpret_cast<void *>(function)};
+        ld<s3, 0, s3> s3_func;
 // loop start:
         beq<s0, s1> loop_start{&stack_load};
-        addi<s0, s0, 1> i3;
-        jal<zero> i4{&loop_start};
+        add<a0, zero, s2> init_func_arg;
+        jalr<ra, s3, 0> call_func;
+        addi<s0, s0, 1> inc_counter;
+        jal<zero> repeat_loop{&loop_start};
 // loop end:
         load_from_stack stack_load;
         jalr<zero, ra, 0> ret;
 // Data for the function to be called. Placed after executable code.
         char data[data_size] {0};
+// Address of the function to be called.
+        func_t function;
 
         /**
          * Constructor.
          *
          * @param data data for the function
          */
-        explicit Function(const char * data) {
+        explicit Function(func_t func, const char * data)
+            : function{func} {
             const char * src = data;
             char * dst = this->data;
             for (unsigned int i = 0; i < data_size; ++i) {
