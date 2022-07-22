@@ -26,6 +26,18 @@ enum Reg {
   r15
 };
 
+/**
+ * Empty function: void func() {}
+ */
+struct EmptyFunction {
+  unsigned char opc{0xC3}; // ret for x64
+
+  void operator()() {
+     auto func = reinterpret_cast<void (*)()>(this);
+     func();
+  }
+};
+
 } // namespace x64
 
 #endif //X_X64_H
