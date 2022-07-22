@@ -180,6 +180,18 @@ struct bl {
 
 #undef I_TO_INT32
 
+/**
+ * Empty function: void func() {}
+ */
+struct EmptyFunction {
+  ret<> i0{};
+
+  void operator()() {
+    auto func = reinterpret_cast<void (*)()>(this);
+    func();
+  }
+};
+
 } // namespace aarch64
 
 #endif //X_AARCH64_H
