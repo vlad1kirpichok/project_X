@@ -509,9 +509,8 @@ namespace riscv64 {
          *
          * Requirement: works correctly only on a RISC-V computer.
          */
-        void call() {
-            typedef void (* func_ptr)();
-            auto func = reinterpret_cast<func_ptr>(this);
+        void operator()() {
+            auto func = reinterpret_cast<void (*)()>(this);
             func();
         }
     };
