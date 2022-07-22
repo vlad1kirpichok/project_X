@@ -26,11 +26,39 @@ enum Reg {
   r15
 };
 
+struct ret {
+  unsigned char opc{0xC3};
+};
+
+template <Reg REG>
+struct pushq {
+  unsigned char opc : 5;
+  unsigned char reg : 3;
+
+  pushq()
+      : opc{(unsigned char) 0x01010}, reg{REG} {
+      static_assert(REG <= 0b0111, "1-byte encoding supports only rax-rbp");
+  }
+};
+
+template <Reg REG>
+struct popq {
+    unsigned char opc : 5;
+    unsigned char reg : 3;
+
+    popq()
+        : opc{(unsigned char) 0x01011}, reg{REG} {
+        static_assert(REG <= 0b0111, "1-byte encoding supports only rax-rbp");
+    }
+};
+
 /**
  * Empty function: void func() {}
  */
 struct EmptyFunction {
-  unsigned char opc{0xC3}; // ret for x64
+  pushq<rax> i0;
+  popq<rax> i1;
+  ret i2;
 
   void operator()() {
      auto func = reinterpret_cast<void (*)()>(this);
