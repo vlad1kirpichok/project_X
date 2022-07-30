@@ -36,9 +36,9 @@ struct pushq {
   unsigned char opc : 5;
 
   pushq()
-      : reg{REG}
-      , opc{0b01010} {
-      static_assert(REG <= 0b0111, "1-byte encoding supports only rax-rbp");
+    : reg{REG}
+    , opc{0b01010} {
+    static_assert(REG <= 0b0111, "1-byte encoding supports only rax-rbp");
   }
 };
 
@@ -97,19 +97,38 @@ struct dec {
     , opc2{0b11001} {}
 };
 
+template <Reg REG, int IMM>
+struct mov {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+  unsigned char imm[4]; // char[4] instead of int to prevent alignment
+
+  mov()
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b11000111}
+    , reg{REG}
+    , opc2{0b11000} {
+    *reinterpret_cast<int *>(imm) = IMM;
+  }
+};
+
 /**
  * Empty function: void func() {}
  */
 struct EmptyFunction {
   pushq<rax> i0;
+  popq<rax> i1;
+  mov<rax, 15> i13;
   inc<rax> i01;
   dec<rax> i02;
-  popq<rax> i1;
+  inc<rax> i05;
   ret i2;
 
-  void operator()() {
-     auto func = reinterpret_cast<void (*)()>(this);
-     func();
+  int operator()() {
+     auto func = reinterpret_cast<int (*)()>(this);
+     return func();
   }
 };
 
