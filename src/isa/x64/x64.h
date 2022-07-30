@@ -32,24 +32,69 @@ struct ret {
 
 template <Reg REG>
 struct pushq {
-  unsigned char opc : 5;
   unsigned char reg : 3;
+  unsigned char opc : 5;
 
   pushq()
-      : opc{(unsigned char) 0x01010}, reg{REG} {
+      : reg{REG}
+      , opc{0b01010} {
       static_assert(REG <= 0b0111, "1-byte encoding supports only rax-rbp");
   }
 };
 
 template <Reg REG>
 struct popq {
-    unsigned char opc : 5;
-    unsigned char reg : 3;
+  unsigned char reg : 3;
+  unsigned char opc : 5;
 
-    popq()
-        : opc{(unsigned char) 0x01011}, reg{REG} {
-        static_assert(REG <= 0b0111, "1-byte encoding supports only rax-rbp");
-    }
+  popq()
+    : reg{REG}
+    , opc{0b01011} {
+    static_assert(REG <= 0b0111, "1-byte encoding supports only rax-rbp");
+  }
+};
+
+struct rex {
+  unsigned char b : 1;
+  unsigned char x : 1;
+  unsigned char r : 1;
+  unsigned char w : 1;
+  unsigned char pref : 4;
+
+  rex(unsigned char w, unsigned char r, unsigned char x, unsigned char b)
+    : b{b}
+    , x{x}
+    , r{r}
+    , w{w}
+    , pref{0b0100} {}
+};
+
+template <Reg REG>
+struct inc {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+
+  inc()
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b11111111}
+    , reg{REG}
+    , opc2{0b11000} {}
+};
+
+template <Reg REG>
+struct dec {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+
+  dec()
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b11111111}
+    , reg{REG}
+    , opc2{0b11001} {}
 };
 
 /**
@@ -57,6 +102,8 @@ struct popq {
  */
 struct EmptyFunction {
   pushq<rax> i0;
+  inc<rax> i01;
+  dec<rax> i02;
   popq<rax> i1;
   ret i2;
 
