@@ -14,8 +14,12 @@ void print_bytes(const unsigned char* data, unsigned int size) {
   std::cout << std::hex;
   const unsigned char* current = data;
   for (unsigned int index = 0; index < size; ++index) {
-    std::cout << static_cast<unsigned int>(*current);
-    current++;
+    unsigned char val = *current++;
+    if (val) {
+       std::cout << static_cast<unsigned int>(val);
+    } else {
+       std::cout << "00";
+    }
   }
   std::cout.flags(flags);
   std::cout << std::endl;
