@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.15)
 
 project(project_X)
 
@@ -16,6 +16,7 @@ if(UNIX AND NOT APPLE)
         src/main.cpp
         src/inject/inject.cpp
         src/inject/windows/inject_w.cpp
+        src/isa/utils.cpp
     )
 endif()
 
@@ -25,6 +26,7 @@ if(APPLE)
         src/main.cpp
         src/inject/inject.cpp
         src/inject/macos/inject_m.cpp
+        src/isa/utils.cpp
     )
 endif()
 
@@ -34,5 +36,6 @@ if(WIN32)
         src/main.cpp
         src/inject/inject.cpp
         src/inject/windows/inject_w.cpp
+        src/isa/utils.cpp
     )
 endif()
