@@ -56,12 +56,17 @@ void test() {
   print_bytes(inc<rax>{});
   print_bytes(dec<rax>{});
   print_bytes(popq<rax>{});
+  print_bytes(mov<rax, 3>{});
+  std::cout << sizeof(mov<rax, 3>{}) << std::endl;
+    print_bytes(add<rdx, 1>{});
 }
 } // namespace x64
 
 int main(int argc, char* argv[]) {
   x64::test();
-  x64::EmptyFunction()();
+  long res  = x64::EmptyFunction()();
+  std::cout << "RES = " << res << std::endl;
+  std::cout << "SIZE = " << sizeof(x64::EmptyFunction) << std::endl;
 
   aarch64::test();
   xinject::save("aarch64_test.bin", aarch64::Program{});
