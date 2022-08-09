@@ -130,6 +130,22 @@ struct add {
     , imm{IMM} {}
 };
 
+template <Reg REG1, Reg REG2>
+struct cmp {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg1 : 3;
+  unsigned char reg2 : 3;
+  unsigned char opc2 : 2;
+
+  cmp()
+    : pref{1, 0, 0, REG1 >> 3}
+    , opc1{0b00111001}
+    , reg1{REG1}
+    , reg2{REG2}
+    , opc2{0b11} {}
+};
+
 /**
  * Empty function: void func() {}
  */
