@@ -48,6 +48,10 @@ enum Cond {
   NLE, G = NLE, // 1111 = Not less
 };
 
+inline char offset_8bits(void* source, void* target) {
+  return static_cast<char>(static_cast<char *>(target) - static_cast<char *>(source));
+}
+
 struct nop {
   unsigned char opc{0b10010000};
 };
@@ -170,6 +174,18 @@ struct cmp {
     , reg1{REG1}
     , reg2{REG2}
     , opc2{0b11} {}
+};
+
+struct jmp {
+  unsigned char opc;
+  char off;
+
+  jmp(char offset)
+    : opc{0b11101011}
+    , off{offset} {}
+
+  jmp(void* target)
+    : jmp{static_cast<char>(offset_8bits(this, target) - sizeof(*this))} {}
 };
 
 /**
