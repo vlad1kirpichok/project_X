@@ -26,6 +26,36 @@ enum Reg {
   r15
 };
 
+/**
+ * Encoding of Conditional Test (tttn) Field.
+ */
+enum Cond {
+  O,            // 0000 = Overflow
+  NO,           // 0001 = No overflow
+  B, NAE = B,   // 0010 = Below, Not above or equal
+  NB, AE = NB,  // 0011 = Not below, Above or equal
+  E, Z = E,     // 0100 = Equal, Zero
+  NE, NZ = NE,  // 0101 = Not equal, Not zero
+  BE, NA = BE,  // 0110 = Below or equal, Not above
+  NBE, A = NBE, // 0111 = Not below or equal, Above
+  S,            // 1000 = Sign
+  NS,           // 1001 = Not sign
+  P, PE = P,    // 1010 = Parity, Parity Even
+  NP, PO = NP,  // 1011 = Not parity, Parity Odd
+  L, NGE = L,   // 1100 = Less than, Not greater than or equal to
+  NL, GE = NL,  // 1101 = Not less than, Greater than or equal to
+  LE, NG = LE,  // 1110 = Less than or equal to, Not greater than
+  NLE, G = NLE, // 1111 = Not less
+};
+
+inline char offset_8bits(void* source, void* target) {
+  return static_cast<char>(static_cast<char *>(target) - static_cast<char *>(source));
+}
+
+struct nop {
+  unsigned char opc{0b10010000};
+};
+
 struct ret {
   unsigned char opc{0xC3};
 };
@@ -144,6 +174,18 @@ struct cmp {
     , reg1{REG1}
     , reg2{REG2}
     , opc2{0b11} {}
+};
+
+struct jmp {
+  unsigned char opc;
+  char off;
+
+  jmp(char offset)
+    : opc{0b11101011}
+    , off{offset} {}
+
+  jmp(void* target)
+    : jmp{static_cast<char>(offset_8bits(this, target) - sizeof(*this))} {}
 };
 
 /**
