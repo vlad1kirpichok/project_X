@@ -52,13 +52,16 @@ struct Program {
 };
 
 void test() {
+  std::cout << "----------------" << std::endl;
   print_bytes(pushq<rax>{});
   print_bytes(inc<rax>{});
   print_bytes(dec<rax>{});
   print_bytes(popq<rax>{});
   print_bytes(mov<rax, 3>{});
+  print_bytes(cmp<rcx, rdx>{});
   std::cout << sizeof(mov<rax, 3>{}) << std::endl;
-    print_bytes(add<rdx, 1>{});
+  std::cout << "------------------" << std::endl;
+  print_bytes(add<rdx, 1>{});
 }
 } // namespace x64
 
