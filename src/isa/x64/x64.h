@@ -188,6 +188,21 @@ struct jmp {
     : jmp{static_cast<char>(offset_8bits(this, target) - sizeof(*this))} {}
 };
 
+template <Cond COND>
+struct j {
+  unsigned char opc : 4;
+  unsigned char tttn : 4;
+  char off;
+
+  j(char offset)
+    : opc{0b0111}
+    , tttn{COND}
+    , off{offset} {}
+
+  j(void* target)
+    : j{static_cast<char>(offset_8bits(this, target) - sizeof(*this))} {}
+};
+
 /**
  * Empty function: void func() {}
  */

@@ -59,6 +59,8 @@ void test() {
   print_bytes(popq<rax>{});
   print_bytes(mov<rax, 3>{});
   print_bytes(cmp<rcx, rdx>{});
+  print_bytes(jmp{char{2}});
+  print_bytes(j<G>{char{2}});
   std::cout << sizeof(mov<rax, 3>{}) << std::endl;
   std::cout << "------------------" << std::endl;
   print_bytes(add<rdx, 1>{});
