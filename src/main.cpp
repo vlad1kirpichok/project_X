@@ -61,6 +61,9 @@ void test() {
   print_bytes(cmp<rcx, rdx>{});
   print_bytes(jmp{char{2}});
   print_bytes(j<G>{char{2}});
+  std::cout << "/------------------" << std::endl;
+  print_bytes(lea<rdi, rax, 0x78>{});
+  std::cout << "/------------------" << std::endl;
   std::cout << sizeof(mov<rax, 3>{}) << std::endl;
   std::cout << "------------------" << std::endl;
   print_bytes(add<rdx, 1>{});
