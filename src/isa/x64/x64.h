@@ -12,10 +12,10 @@ enum Reg {
   rcx,
   rdx,
   rbx,
-  rsi,
-  rdi,
   rsp,
   rbp,
+  rsi,
+  rdi,
   r8,
   r9,
   r10,
@@ -201,6 +201,24 @@ struct j {
 
   j(void* target)
     : j{static_cast<char>(offset_8bits(this, target) - sizeof(*this))} {}
+};
+
+template <Reg REG1, Reg REG2, int DISP>
+struct lea {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg2 : 3;
+  unsigned char reg1 : 3;
+  unsigned char mod: 2;
+  unsigned char disp;
+
+  lea()
+    : pref{1, 0, 0, REG1 >> 3}
+    , opc1{0b10001101}
+    , mod{0b01}
+    , reg1{REG1}
+    , reg2{REG2}
+    , disp{DISP} {}
 };
 
 /**
