@@ -1,6 +1,6 @@
-
 #ifndef X_X64_H
 #define X_X64_H
+#include <iostream>
 
 namespace x64 {
 
@@ -12,10 +12,10 @@ enum Reg {
   rcx,
   rdx,
   rbx,
-  rsp,
-  rbp,
   rsi,
   rdi,
+  rsp,
+  rbp,
   r8,
   r9,
   r10,
@@ -52,12 +52,12 @@ inline char offset_8bits(void* source, void* target) {
   return static_cast<char>(static_cast<char *>(target) - static_cast<char *>(source));
 }
 
-struct nop {
-  unsigned char opc{0b10010000};
-};
-
 struct ret {
   unsigned char opc{0xC3};
+};
+
+struct nop {
+  unsigned char opc{0x90};
 };
 
 template <Reg REG>
@@ -65,7 +65,7 @@ struct pushq {
   unsigned char reg : 3;
   unsigned char opc : 5;
 
-  pushq()
+  pushq() //register alternate encoding
     : reg{REG}
     , opc{0b01010} {
     static_assert(REG <= 0b0111, "1-byte encoding supports only rax-rbp");
@@ -84,8 +84,8 @@ struct popq {
   }
 };
 
-struct rex {
-  unsigned char b : 1;
+struct rex { 
+  unsigned char b : 1; //расшир-нерасшир
   unsigned char x : 1;
   unsigned char r : 1;
   unsigned char w : 1;
@@ -136,14 +136,14 @@ struct mov {
   unsigned char opc2 : 5;
   unsigned int imm;
 
-  mov()
+  mov() //immediate to register
     : pref{1, 0, 0, REG >> 3}
     , opc1{0b11000111}
-    , reg{REG}
     , opc2{0b11000}
+    , reg{REG}
     , imm{IMM} {}
 };
-
+  
 template <Reg REG, char IMM>
 struct add {
   rex pref;
@@ -152,7 +152,9 @@ struct add {
   unsigned char opc2 : 5;
   char imm;
 
-  add()
+  add() //opc1 -> opc2 -> reg -> imm см табл на стр 76 INTEL B.2
+  //s - sign extend to fill 
+  //w - register width w=1,
     : pref{1, 0, 0, REG >> 3}
     , opc1{0b10000011}
     , reg{REG}
@@ -160,20 +162,51 @@ struct add {
     , imm{IMM} {}
 };
 
-template <Reg REG1, Reg REG2>
-struct cmp {
+template <Reg REG, char IMM>
+struct and_I {
   rex pref;
   unsigned char opc1;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+  char imm;
+
+  and_I() //immediate to register
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b10000011}  // s = 1, w = 1
+    , reg{REG}
+    , opc2{0b11100}
+    , imm{IMM} {}
+};
+
+template <Reg REG1, Reg REG2>
+struct and_R {
+  rex pref;
+  unsigned char opc1 ;
   unsigned char reg1 : 3;
   unsigned char reg2 : 3;
   unsigned char opc2 : 2;
 
-  cmp()
+  and_R() //reg1 to reg2
     : pref{1, 0, 0, REG1 >> 3}
-    , opc1{0b00111001}
+    , opc1{0b00100001}  // s = 1, w = 1
+    , opc2{0b11}
     , reg1{REG1}
-    , reg2{REG2}
-    , opc2{0b11} {}
+    , reg2{REG2} {}
+};
+
+template <Reg REG>
+struct not_I {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+
+
+  not_I() //register
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b11110111}
+    , reg{REG}
+    , opc2{0b11010} {}
 };
 
 struct jmp {
@@ -203,6 +236,69 @@ struct j {
     : j{static_cast<char>(offset_8bits(this, target) - sizeof(*this))} {}
 };
 
+template <Reg REG, char IMM>
+struct cmp {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+  char imm;
+  cmp() //
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b10000011}
+    , reg{REG}
+    , opc2{0b11111}
+    , imm{IMM} {}
+};
+
+template <Reg REG, char IMM>
+struct shl {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+  char imm;
+
+  shl() //reg by imm count
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b11000001}
+    , reg{REG}
+    , opc2{0b11100}
+    , imm{IMM} {}
+};
+
+template <Reg REG, char IMM>
+struct shr {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+  char imm;
+
+  shr() //reg by imm count
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b11000001}
+    , reg{REG}
+    , opc2{0b11101}
+    , imm{IMM} {}
+};
+
+template <Reg REG, char IMM>
+struct sar {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+  char imm;
+  
+  sar() //reg by imm count
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b11000001}
+    , opc2{0b11111}
+    , reg{REG}
+    , imm{IMM} {}
+};
+  
 template <Reg REG1, Reg REG2, int DISP>
 struct lea {
   rex pref;
@@ -220,6 +316,120 @@ struct lea {
     , reg2{REG2}
     , disp{DISP} {}
 };
+
+template <int DISP>
+struct call {
+  rex pref;
+  unsigned char opc1;
+  unsigned char disp;
+
+  call()
+    : opc1{0b11101000}
+    , disp{DISP} {}
+};
+
+
+template <Reg REG, char IMM>
+struct xor_I {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+  char imm;
+
+  xor_I()
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b10000011}
+    , reg{REG}
+    , opc2{0b11000}
+    , imm{IMM} {}
+};
+
+template <Reg REG1, Reg REG2>
+struct xor_R {
+  rex pref;
+  unsigned char opc1 ;
+  unsigned char reg1 : 3;
+  unsigned char reg2 : 3;
+  unsigned char opc2 : 2;
+
+
+  xor_R() //reg1 to reg2
+    : pref{1, 0, 0, REG1 >> 3}
+    , opc1{0b00110001}  // s = 1, w = 1
+    , opc2{0b11}
+    , reg1{REG1}
+    , reg2{REG2} {}
+};
+
+template <Reg REG1, Reg REG2>
+struct test_R {
+  rex pref;
+  unsigned char opc1 ;
+  unsigned char reg1 : 3;
+  unsigned char reg2 : 3;
+  unsigned char opc2 : 2;
+
+
+  test_R() //reg1 to reg2
+    : pref{1, 0, 0, REG1 >> 3}
+    , opc1{0b10000101}  // s = 1, w = 1
+    , opc2{0b11}
+    , reg1{REG1}
+    , reg2{REG2} {}
+};
+
+template <Reg REG, char IMM>
+struct test_I {
+  rex pref;
+  unsigned char opc1 ;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+  char imm;
+
+  test_I() //reg1 to reg2
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b11110111}  // s = 1, w = 1
+    , opc2{0b11000}
+    , reg{REG}
+    , imm{IMM} {}
+};
+
+template <Reg REG1, Reg REG2>
+struct or_R {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg1 : 3;
+  unsigned char reg2 : 3;
+  unsigned char opc2 : 5;
+
+
+  or_R() //immediate to register mod and r/m ?
+    : pref{1, 0, 0, REG1 >> 3}
+    , opc1{0b10000011}
+    , opc2{0b11001}
+    , reg1{REG1}
+    , reg2{REG2} {}
+};
+
+
+template <Reg REG, char IMM>
+struct or_I {
+  rex pref;
+  unsigned char opc1;
+  unsigned char reg : 3;
+  unsigned char opc2 : 5;
+  char imm;
+
+  or_I() //immediate to register mod and r/m ?
+    : pref{1, 0, 0, REG >> 3}
+    , opc1{0b10000011}
+    , opc2{0b11001}
+    , reg{REG}
+    , imm{IMM} {}
+};
+  
+
 
 /**
  * Empty function: void func() {}
@@ -241,3 +451,23 @@ struct EmptyFunction {
 } // namespace x64
 
 #endif //X_X64_H
+
+/*
+ *Instructions from test_x64:
+ *pushq + checked
+ *popq + checked
+ *movq (mov +) checked
+ *movl
+ *testl reg1, reg2
+ *inc checked
+ *j   checked
+ *jmp checked
+ *cmp checked
+ *call ?
+ *decl (dec +) checked
+ *nop checked
+ *addq + (kind of understood how it works)
+ *retq (ret +) checked
+ *leaq ??
+ *xorl ??
+ */
