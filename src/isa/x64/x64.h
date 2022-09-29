@@ -60,6 +60,14 @@ struct nop {
   unsigned char opc{0x90};
 };
 
+struct pushad {
+  unsigned char opc{0x60};
+};
+
+struct popad {
+  unsigned char opc{0x61};
+};
+
 template <Reg REG>
 struct pushq {
   unsigned char reg : 3;
