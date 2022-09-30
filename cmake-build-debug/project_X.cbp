@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="project_X"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="project_X">
+				<Option output="/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/project_X" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/artemsmirnov/2ndYearProject/project_X/src/inject"/>
+					<Add directory="/Users/artemsmirnov/2ndYearProject/project_X/src/isa"/>
+					<Add directory="/Users/artemsmirnov/2ndYearProject/project_X/src/isa/aarch64"/>
+					<Add directory="/Users/artemsmirnov/2ndYearProject/project_X/src/isa/riscv64"/>
+					<Add directory="/Users/artemsmirnov/2ndYearProject/project_X/src/isa/x64"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/12.0.5/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 project_X"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="project_X/fast">
+				<Option output="/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/project_X" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/artemsmirnov/2ndYearProject/project_X/src/inject"/>
+					<Add directory="/Users/artemsmirnov/2ndYearProject/project_X/src/isa"/>
+					<Add directory="/Users/artemsmirnov/2ndYearProject/project_X/src/isa/aarch64"/>
+					<Add directory="/Users/artemsmirnov/2ndYearProject/project_X/src/isa/riscv64"/>
+					<Add directory="/Users/artemsmirnov/2ndYearProject/project_X/src/isa/x64"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/bin/../include/c++/v1"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/12.0.5/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 project_X/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/artemsmirnov/2ndYearProject/project_X/src/inject/inject.cpp">
+			<Option target="project_X"/>
+		</Unit>
+		<Unit filename="/Users/artemsmirnov/2ndYearProject/project_X/src/inject/inject.h">
+			<Option target="project_X"/>
+		</Unit>
+		<Unit filename="/Users/artemsmirnov/2ndYearProject/project_X/src/inject/macos/inject_m.cpp">
+			<Option target="project_X"/>
+		</Unit>
+		<Unit filename="/Users/artemsmirnov/2ndYearProject/project_X/src/inject/macos/inject_m.h">
+			<Option target="project_X"/>
+		</Unit>
+		<Unit filename="/Users/artemsmirnov/2ndYearProject/project_X/src/isa/utils.cpp">
+			<Option target="project_X"/>
+		</Unit>
+		<Unit filename="/Users/artemsmirnov/2ndYearProject/project_X/src/isa/utils.h">
+			<Option target="project_X"/>
+		</Unit>
+		<Unit filename="/Users/artemsmirnov/2ndYearProject/project_X/src/main.cpp">
+			<Option target="project_X"/>
+		</Unit>
+		<Unit filename="/Users/artemsmirnov/2ndYearProject/project_X/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,3 @@
+/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/artemsmirnov/2ndYearProject/project_X/cmake-build-debug/CMakeFiles/project_X.dir
