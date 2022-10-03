@@ -1,4 +1,3 @@
-
 #include <iostream>
 
 #include "inject/inject.h"
@@ -71,24 +70,22 @@ void test() {
 } // namespace x64
 
 int main(int argc, char* argv[]) {
-  x64::test();
-  long res  = x64::EmptyFunction()();
-  std::cout << "RES = " << res << std::endl;
-  std::cout << "SIZE = " << sizeof(x64::EmptyFunction) << std::endl;
-
-  aarch64::test();
-  xinject::save("aarch64_test.bin", aarch64::Program{});
-  xinject::save("riscv64_test.bin", riscv64::Program{});
-  xinject::save("x64_test.bin",     x64::Program{});
-
-  riscv64::Function<8, 10> proga{puts, "hello"};
-  std::cout << sizeof(proga) << std::endl;
-  std::cout << "This is a test" << std::endl;
-  if (argc < 2) {
-    std::cout << "File to be patched is not specified!" << std::endl;
-    return 1;
-  }
   int x = 0;
-  xinject::inject(argv[1], x);
+  xinject::inject(argv[1],x);
+
+//  aarch64::test();
+//  xinject::save("aarch64_test.bin", aarch64::Program{});
+//  xinject::save("riscv64_test.bin", riscv64::Program{});
+//  xinject::save("x64_test.bin",     x64::Program{});
+
+//  riscv64::Function<8, 10> proga{puts, "hello"};
+//  std::cout << sizeof(proga) << std::endl;
+//  std::cout << "This is a test" << std::endl;
+//  if (argc < 2) {
+//    std::cout << "File to be patched is not specified!" << std::endl;
+//    return 1;
+//  }
+//  //int x = 0;
+//  xinject::inject(argv[1], x);
   return 0;
 }
