@@ -1,4 +1,6 @@
 #include "inject_w.h"
+#include <windows.h>
+#include <stdio.h>
 
 
 void shellcode()
@@ -115,6 +117,9 @@ namespace windows {
 template<typename T>
 void inject(const std::string &path, const T &binary) {
   std::cout << "Hello from Windows OS!" << std::endl;
+    
+  //Creating simple window
+  MessageBoxA(0, "Hello world!", "Hello world!", 0);
 
 
   std::string pathToExe;
